@@ -1,2 +1,10 @@
 2016-08-20 20:37:41,522 - main.objectManager - ERROR - get_file error-- {'details': {}, 'status': 404}
 2016-08-20 20:37:57,581 - main.objectManager - ERROR - get_file error-- {'details': {}, 'status': 404}
+2016-08-21 15:47:47,241 - main.objectManager - ERROR - put_file error-- [Errno 13] Permission denied: 'testDirect'
+2016-08-21 15:47:47,242 - main.objectManager - ERROR - get_file error-- [Errno 13] Permission denied: 'testDirect'
+2016-08-21 15:50:03,901 - main.objectManager - ERROR - put_file error-- [Errno 13] Permission denied: 'testDirect'
+2016-08-21 15:51:42,371 - main.objectManager - ERROR - put_file error-- [Errno 2] No such file or directory: ''
+2016-08-21 15:53:44,799 - main.objectManager - ERROR - put_file error-- [Errno 2] No such file or directory: '/testDirect'
+2016-08-21 19:55:27,134 - main.objectManager - ERROR - put_file error-- Unicode-objects must be encoded before hashing
+2016-08-21 19:55:27,134 - main.objectManager - ERROR - get_file error-- [Errno 2] No such file or directory: 'test/testPayLoad.html'
+2016-08-21 20:00:06,770 - main.objectManager - ERROR - get_file error-- [Errno 2] No such file or directory: 'test/testPayLoad.html'
