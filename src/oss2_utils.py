@@ -2,6 +2,7 @@
 
 from hashlib import md5
 import oss2
+import os
 
 
 def exception_string(e):
@@ -39,7 +40,7 @@ def local_to_remote(local, mapping):
     :param mapping:
     :return:
     """
-    rootl, rootr = None
+    rootl, rootr = None, None
     for k, v in mapping.items():
         if k in local:
             rootl, rootr = k, v
@@ -47,7 +48,10 @@ def local_to_remote(local, mapping):
     if rootl is None or rootr is None:
         raise Exception("No local root matches!")
     common = local.split(rootl)[1]
-    remote = rootr + "/" + common[1:]
+    remote = rootr + common
+    if len(os.path.splitext(remote)[-1]) == 0:
+        remote += '/'
+    remote = remote.replace('\\', '/')
     return remote
 
 
@@ -58,7 +62,7 @@ def remote_to_local(remote, mapping):
     :param mapping:
     :return:
     """
-    rootl, rootr = None
+    rootl, rootr = None, None
     for k, v in mapping.items():
         if v in remote:
             rootl, rootr = k, v
@@ -66,5 +70,7 @@ def remote_to_local(remote, mapping):
     if rootl is None or rootr is None:
         raise Exception("No remote root matches!")
     common = remote.split(rootr)[1]
-    local = rootl + "\\" + common[1:]
+    local = rootl + common
+    local = local.replace('/', '\\')
     return local
+

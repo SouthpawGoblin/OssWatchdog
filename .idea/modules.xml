@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OssAutoSynch.iml" filepath="$PROJECT_DIR$/.idea/OssAutoSynch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../aliyun-oss-python-sdk/.idea/aliyun-oss-python-sdk.iml" filepath="$PROJECT_DIR$/../aliyun-oss-python-sdk/.idea/aliyun-oss-python-sdk.iml" />
     </modules>
   </component>
 </project>
