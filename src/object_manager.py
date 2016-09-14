@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
 
+# Copyright 2016 Qi Yinzhe(Yinzhe-Qi) <goblin-qyz@163.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import src.oss2_utils as util
 import oss2
 import logging
@@ -41,13 +55,15 @@ class ObjectManager:
             logger.error("get_etag error-- " + util.exception_string(e))
             return False
 
-    def put_object(self, remote, local):    # TODO: resumable support
+    def put_object(self, remote, local):
         """
         upload a file
         :param remote:
         :param local:
         :return:
         """
+        # TODO: resumable support
+        # TODO: progress report
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
@@ -58,13 +74,15 @@ class ObjectManager:
             logger.error("put_object error-- " + util.exception_string(e))
             return False
 
-    def get_object(self, remote, local):    # TODO: resumable support
+    def get_object(self, remote, local):
         """
         download a file
         :param local:
         :param remote:
         :return:
         """
+        # TODO: resumable support
+        # TODO: progress report
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if os.path.exists(local) and self.get_etag(remote) == util.file_md5(local):
@@ -81,6 +99,7 @@ class ObjectManager:
         :param remote:
         :return:
         """
+        # TODO: progress report
         try:
             if self.object_exists(remote):
                 self.bucket.delete_object(remote)
@@ -98,6 +117,7 @@ class ObjectManager:
         :param remote_new:
         :return:
         """
+        # TODO: progress report
         try:
             if self.object_exists(remote_old):
                 self.bucket.copy_object(self.bucket.bucket_name, remote_old, remote_new)

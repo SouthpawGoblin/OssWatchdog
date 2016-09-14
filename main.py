@@ -1,7 +1,20 @@
 # -*- coding: utf-8 -*-
 
+# Copyright 2016 Qi Yinzhe(Yinzhe-Qi) <goblin-qyz@163.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import config.config3 as config
-import src.object_manager as om
 import src.watchdog_impl as wd
 import src.oss2_utils as util
 import logging.config
@@ -17,7 +30,10 @@ logger = logging.getLogger("main")
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
 bucket = oss2.Bucket(auth, config.endpoint, config.bucket_name)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
-object_manager = om.ObjectManager(bucket)
+
+# TODO: maintain a list of each key-value pair in config.directory_mapping
+# TODO: on init, check config.directory_mapping for duplicate values
+# TODO: move bucket name config into config.directory_mapping (support multi-bucket)
 
 ################################# test ###########################################
 # md5 = util.file_md5("testPayLoad.html")
