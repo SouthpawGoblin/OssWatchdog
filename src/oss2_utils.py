@@ -47,20 +47,15 @@ def file_md5(file):
     return m.hexdigest().upper()
 
 
-def local_to_remote(local, mapping):
+def local_to_remote(local, local_remote_root):
     """
     transfer local path to the corresponding remote path using directory map
     :param local:
-    :param mapping:
+    :param local_remote_root:
     :return:
     """
-    rootl, rootr = None, None
-    for k, v in mapping.items():
-        if k in local:
-            rootl, rootr = k, v
-            break
-    if rootl is None or rootr is None:
-        raise Exception("No local root matches!")
+    assert local_remote_root[0] in local, 'local does not match local_root'
+    rootl, rootr = local_remote_root[0], local_remote_root[1]
     common = local.split(rootl)[1]
     remote = rootr + common
     if len(os.path.splitext(remote)[-1]) == 0:
@@ -69,20 +64,15 @@ def local_to_remote(local, mapping):
     return remote
 
 
-def remote_to_local(remote, mapping):
+def remote_to_local(remote, local_remote_root):
     """
     transfer remote path to the corresponding local path using directory map
     :param remote:
-    :param mapping:
+    :param local_remote_root:
     :return:
     """
-    rootl, rootr = None, None
-    for k, v in mapping.items():
-        if v in remote:
-            rootl, rootr = k, v
-            break
-    if rootl is None or rootr is None:
-        raise Exception("No remote root matches!")
+    assert local_remote_root[1] in remote, 'remote does not match remote_root'
+    rootl, rootr = local_remote_root[0], local_remote_root[1]
     common = remote.split(rootr)[1]
     local = rootl + common
     local = local.replace('/', '\\')

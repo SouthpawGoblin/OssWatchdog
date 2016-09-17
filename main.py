@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import config.config3 as config
+import config.config as config
 import src.watchdog_impl as wd
 import src.oss2_utils as util
 import logging.config
@@ -22,13 +22,14 @@ import time
 import oss2.utils
 from watchdog.observers import Observer
 
+mapping = config.directory_mapping
+
 # logging config
 logging.config.fileConfig(r"log\config")
 logger = logging.getLogger("main")
 
 # oss config
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
-bucket = oss2.Bucket(auth, config.endpoint, config.bucket_name)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
 
 # TODO: maintain a list of each key-value pair in config.directory_mapping
@@ -43,10 +44,11 @@ service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_tim
 # a = 2
 
 observers = []
-for local_root in config.directory_mapping.keys():
+for local_root, remote_root in mapping.items():
     try:
         observer = Observer()
-        event_handler = wd.FileEventHandler(bucket)
+        bucket = oss2.Bucket(auth, config.endpoint, remote_root[0])
+        event_handler = wd.FileEventHandler(bucket, (local_root, remote_root[1]))
         observer.schedule(event_handler, local_root, True)  # 开启递归，文件夹的变动会依次触发子项的变动
         observer.start()
         observers.append(observer)
