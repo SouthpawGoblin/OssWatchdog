@@ -48,3 +48,7 @@
 2016-09-14 16:44:32,932 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\My Codes\\MyRepo\\OssAutoSynch\\testDirect\\测试test'
 2016-09-14 16:50:02,557 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\My Codes\\MyRepo\\OssAutoSynch\\testDirect\\测试test\\新建文件夹'
 2016-09-14 16:50:43,088 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\My Codes\\MyRepo\\OssAutoSynch\\testDirect\\测试test\\新建文件夹 (2)'
+2016-09-24 22:01:02,250 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹'
+2016-09-24 22:05:07,969 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (3)'
+2016-09-24 22:05:34,948 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (4)'
+2016-09-24 22:08:30,363 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (5)'

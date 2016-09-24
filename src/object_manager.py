@@ -68,8 +68,10 @@ class ObjectManager:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
                 return False
-            result = self.bucket.put_object_from_file(remote, local)
-            return result
+            if os.path.isdir(local):
+                return self.bucket.put_object(remote, '')
+            else:
+                return self.bucket.put_object_from_file(remote, local)
         except Exception as e:
             logger.error("put_object error-- " + util.exception_string(e))
             return False
