@@ -27,7 +27,7 @@ class ObjectManager:
     class for managing bucket objects
     """
     def __init__(self, bucket):
-        self.bucket = bucket
+        self.__bucket = bucket
 
     def object_exists(self, remote):
         """
@@ -36,7 +36,7 @@ class ObjectManager:
         :return:
         """
         try:
-            return self.bucket.object_exists(remote)
+            return self.__bucket.object_exists(remote)
         except Exception as e:
             logger.error("object_exists error-- " + util.exception_string(e))
             return None
@@ -49,7 +49,7 @@ class ObjectManager:
         """
         try:
             if self.object_exists(remote):
-                return self.bucket.head_object(remote).etag
+                return self.__bucket.head_object(remote).etag
             return False
         except Exception as e:
             logger.error("get_etag error-- " + util.exception_string(e))
@@ -69,9 +69,9 @@ class ObjectManager:
             if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
                 return False
             if os.path.isdir(local):
-                return self.bucket.put_object(remote, '')
+                return self.__bucket.put_object(remote, '')
             else:
-                return self.bucket.put_object_from_file(remote, local)
+                return self.__bucket.put_object_from_file(remote, local)
         except Exception as e:
             logger.error("put_object error-- " + util.exception_string(e))
             return False
@@ -89,7 +89,7 @@ class ObjectManager:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if os.path.exists(local) and self.get_etag(remote) == util.file_md5(local):
                 return False
-            result = self.bucket.get_object_to_file(remote, local)
+            result = self.__bucket.get_object_to_file(remote, local)
             return result
         except Exception as e:
             logger.error("get_object error-- " + util.exception_string(e))
@@ -104,7 +104,7 @@ class ObjectManager:
         # TODO: progress report
         try:
             if self.object_exists(remote):
-                self.bucket.delete_object(remote)
+                self.__bucket.delete_object(remote)
                 return True
             else:
                 return False
@@ -122,7 +122,7 @@ class ObjectManager:
         # TODO: progress report
         try:
             if self.object_exists(remote_old):
-                self.bucket.copy_object(self.bucket.bucket_name, remote_old, remote_new)
+                self.__bucket.copy_object(self.__bucket.bucket_name, remote_old, remote_new)
                 self.delete_object(remote_old)
                 return True
             else:
@@ -139,6 +139,6 @@ class ObjectManager:
         :return:
         """
         try:
-            return oss2.ObjectIterator(self.bucket, prefix, delimiter)
+            return oss2.ObjectIterator(self.__bucket, prefix, delimiter)
         except Exception as e:
             logger.error("get_object_iter error-- " + util.exception_string(e))

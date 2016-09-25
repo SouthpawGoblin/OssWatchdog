@@ -24,30 +24,30 @@ logger = logging.getLogger("main.watchdogImpl")
 class FileEventHandler(FileSystemEventHandler):
     def __init__(self, bucket, local_remote_root):
         FileSystemEventHandler.__init__(self)
-        self.ob_manager = om.ObjectManager(bucket)
-        self.local_root = local_remote_root[0]
-        self.remote_root = local_remote_root[1]
+        self.__ob_manager = om.ObjectManager(bucket)
+        self.__local_root = local_remote_root[0]
+        self.__remote_root = local_remote_root[1]
 
     def on_moved(self, event):
-        """重命名"""
+        """rename"""
         try:
-            remote_old = util.local_to_remote(event.src_path, (self.local_root, self.remote_root))
-            remote_new = util.local_to_remote(event.dest_path, (self.local_root, self.remote_root))
-            if not self.ob_manager.rename_object(remote_old, remote_new):
-                # 若原文件不存在则直接put新文件
-                self.ob_manager.put_object(remote_new, event.dest_path)
+            remote_old = util.local_to_remote(event.src_path, (self.__local_root, self.__remote_root))
+            remote_new = util.local_to_remote(event.dest_path, (self.__local_root, self.__remote_root))
+            if not self.__ob_manager.rename_object(remote_old, remote_new):
+                # put new file if old file does not exist
+                self.__ob_manager.put_object(remote_new, event.dest_path)
             print("file moved from {0} to {1}".format(event.src_path, event.dest_path))
         except Exception as e:
             logger.error("rename error-- " + util.exception_string(e))
 
     def on_created(self, event):
-        """新建"""
-        remote = util.local_to_remote(event.src_path, (self.local_root, self.remote_root))
-        self.ob_manager.put_object(remote, event.src_path)
+        """create"""
+        remote = util.local_to_remote(event.src_path, (self.__local_root, self.__remote_root))
+        self.__ob_manager.put_object(remote, event.src_path)
         print("file created:{0}".format(event.src_path))
 
     def on_deleted(self, event):
-        """删除"""
-        remote = util.local_to_remote(event.src_path, (self.local_root, self.remote_root))
-        self.ob_manager.delete_object(remote)
+        """delete"""
+        remote = util.local_to_remote(event.src_path, (self.__local_root, self.__remote_root))
+        self.__ob_manager.delete_object(remote)
         print("file deleted:{0}".format(event.src_path))

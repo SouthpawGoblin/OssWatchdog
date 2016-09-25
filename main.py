@@ -34,10 +34,10 @@ service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_tim
 
 # TODO: maintain a list of each key-value pair in config.directory_mapping
 # TODO: on init, check config.directory_mapping for duplicate values
-# TODO: move bucket name config into config.directory_mapping (support multi-bucket)
 
 ################################# test ###########################################
 # md5 = util.file_md5("testPayLoad.html")
+# print(md5)
 # result = object_manager.put_object("test/testPayLoad.html", "testPayLoad.html")
 # result = object_manager.get_object("test/testPayLoad.html", "testPayLoad.html")
 #
@@ -49,7 +49,7 @@ for local_root, remote_root in mapping.items():
         observer = Observer()
         bucket = oss2.Bucket(auth, config.endpoint, remote_root[0])
         event_handler = wd.FileEventHandler(bucket, (local_root, remote_root[1]))
-        observer.schedule(event_handler, local_root, True)  # 开启递归，文件夹的变动会依次触发子项的变动
+        observer.schedule(event_handler, local_root, True)
         observer.start()
         observers.append(observer)
     except Exception as e:

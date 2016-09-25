@@ -19,6 +19,82 @@ import oss2
 import os
 
 
+class ObjectNode(object):
+    """
+    object tree node, representing the file structure
+    """
+    def __init__(self, relative_path=None, etag=None, last_modified_time=None):
+        """
+        :param relative_path: relative path name without local or remote root
+        :param etag:
+        :param last_modified_time:
+        """
+        self.__rel_path = relative_path
+        self.__etag = etag
+        self.__lmt = last_modified_time
+        self.__father = None
+        self.__children = set([])
+
+    def __eq__(self, other):
+        if not other.__rel_path or other.__rel_path != self.__rel_path:
+            return False
+        if not other.__etag or other.__etag != self.__etag:
+            return False
+        if not other.__lmt or other.__lmt != self.__lmt:
+            return False
+        if other.__children != self.__children:
+            return False
+        return True
+
+    @property
+    def relative_path(self):
+        return self.__rel_path
+
+    @property
+    def etag(self):
+        return self.__etag
+
+    @property
+    def last_modified_time(self):
+        return self.__lmt
+
+    def _update(self):
+        """
+        update lmt and etag all the way up to the root
+        :return:
+        """
+        current = self.__father
+        new_md5_int = int(self.__etag, 16)
+        while current:
+            current.__lmt = self.__lmt
+            old_md5_int = int(current.__etag, 16)
+            current.__etag = str(hex(old_md5_int ^ new_md5_int))[2:].upper()
+            new_md5_int = int(current.__etag, 16) ^ old_md5_int
+            current = current.__father
+        # TODO: distinct add and del lmt
+
+    # TODO: is_dir()
+
+    def add_child(self, node):
+        """
+        :param node:
+        :return:
+        """
+        if node.__rel_path and node.__etag and node.__lmt:
+            node.__father = self
+            self.__children.add(node)
+            node._notify()
+
+    def del_child(self, node):
+        """
+        :param node:
+        :return:
+        """
+        if node in self.__children:
+            node.__father = None
+            self.__children.remove(node)
+
+
 def exception_string(e):
     """
     transfer OssError into string
