@@ -15,6 +15,8 @@
 # limitations under the License.
 
 from hashlib import md5
+import requests
+import time
 import oss2
 import os
 
@@ -23,6 +25,9 @@ class ObjectNode(object):
     """
     object tree node, representing the file structure
     """
+    OPERATION_ADD = 0
+    OPERATION_DEL = 1
+
     def __init__(self, relative_path=None, etag=None, last_modified_time=None):
         """
         :param relative_path: relative path name without local or remote root
@@ -71,9 +76,12 @@ class ObjectNode(object):
             current.__etag = str(hex(old_md5_int ^ new_md5_int))[2:].upper()
             new_md5_int = int(current.__etag, 16) ^ old_md5_int
             current = current.__father
-        # TODO: distinct add and del lmt
 
-    # TODO: is_dir()
+    def is_dir(self):
+        """
+        :return:
+        """
+        return len(os.path.splitext(self.__rel_path)[-1]) == 0
 
     def add_child(self, node):
         """
@@ -83,7 +91,7 @@ class ObjectNode(object):
         if node.__rel_path and node.__etag and node.__lmt:
             node.__father = self
             self.__children.add(node)
-            node._notify()
+            node._update()
 
     def del_child(self, node):
         """
@@ -91,8 +99,21 @@ class ObjectNode(object):
         :return:
         """
         if node in self.__children:
+            node._update()
             node.__father = None
             self.__children.remove(node)
+
+
+def get_server_time():
+    """
+    get server time (GMT timestamp)
+    :return:
+    """
+    response = requests.get('http://www.aliyun.com')
+    t = response.headers.get('date')
+    time_tuple = time.strptime(t[5:25], "%d %b %Y %H:%M:%S")
+    stamp = int(time.mktime(time_tuple))
+    return stamp
 
 
 def exception_string(e):

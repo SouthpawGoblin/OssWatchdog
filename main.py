@@ -34,6 +34,7 @@ service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_tim
 
 # TODO: maintain a list of each key-value pair in config.directory_mapping
 # TODO: on init, check config.directory_mapping for duplicate values
+# TODO: on init, check local time and server time, give warning if the two differs 15mins plus
 
 ################################# test ###########################################
 # md5 = util.file_md5("testPayLoad.html")
