@@ -17,6 +17,7 @@
 import config.config as config
 import src.watchdog_impl as wd
 import src.oss2_utils as util
+import src.object_manager as om
 import logging.config
 import time
 import oss2.utils
@@ -32,7 +33,6 @@ logger = logging.getLogger("main")
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
 
-# TODO: maintain a list of each key-value pair in config.directory_mapping
 # TODO: on init, check config.directory_mapping for duplicate values
 # TODO: on init, check local time and server time, give warning if the two differs 15mins plus
 
