@@ -15,9 +15,8 @@
 # limitations under the License.
 
 import config.config as config
-import src.watchdog_impl as wd
+import src.sync_socket as ss
 import src.oss2_utils as util
-import src.object_manager as om
 import logging.config
 import time
 import oss2.utils
@@ -49,8 +48,8 @@ for local_root, remote_root in mapping.items():
     try:
         observer = Observer()
         bucket = oss2.Bucket(auth, config.endpoint, remote_root[0])
-        event_handler = wd.FileEventHandler(bucket, (local_root, remote_root[1]))
-        observer.schedule(event_handler, local_root, True)
+        sync_socket = ss.SyncSocket(bucket, (local_root, remote_root[1]))
+        observer.schedule(sync_socket, local_root, True)
         observer.start()
         observers.append(observer)
     except Exception as e:
