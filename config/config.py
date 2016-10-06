@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-auth_key = r"SZYhZkId2gJA00af"
+auth_key = r""
 
-auth_key_secret = r"JsZtdWdy9RhNrxFwqF9ICrY9BygvSz"
+auth_key_secret = r""
 
-endpoint = r"oss-cn-shanghai.aliyuncs.com"
+endpoint = r""
 
 connect_timeout = 30
 
@@ -27,5 +27,5 @@ multi_threshold = 20 * 1024 * 1024
 part_size = 20 * 1024 * 1024
 
 directory_mapping = {
-    r'D:\MyCodes\GitRepos\OssAutoSynch\testDirect': (r'private-stuff', r'test')
+    r'': (r'', r'')
 }
