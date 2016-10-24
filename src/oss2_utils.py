@@ -19,6 +19,10 @@ import requests
 import time
 import oss2
 import os
+import logging
+
+logger_main = logging.getLogger("main_logger")
+logger_err = logging.getLogger('err_logger')
 
 
 def get_server_time():

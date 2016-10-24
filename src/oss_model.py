@@ -20,7 +20,8 @@ import logging
 import time
 import os
 
-logger = logging.getLogger("main.ossModel")
+logger_main = logging.getLogger("main_logger")
+logger_err = logging.getLogger('err_logger')
 
 # md5 of ""
 NULL_MD5 = 'D41D8CD98F00B204E9800998ECF8427E'
