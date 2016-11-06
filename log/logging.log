@@ -52,3 +52,40 @@
 2016-09-24 22:05:07,969 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (3)'
 2016-09-24 22:05:34,948 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (4)'
 2016-09-24 22:08:30,363 - main.objectManager - ERROR - put_object error-- [Errno 13] Permission denied: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (5)'
+2016-11-06 14:21:08,536 - main - ERROR - observer-init error-- remote_path does not belong to this root
+2016-11-06 14:22:03,742 - main - ERROR - observer-init error-- remote_path does not belong to this root
+2016-11-06 14:29:35,234 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\'
+2016-11-06 14:40:48,268 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\新建文件夹 (2)\\'
+2016-11-06 15:05:21,935 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\测试test\\新jk和g .txt'
+2016-11-06 15:05:21,936 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\测试test\\新建文件夹 (2)\\新建 Microsoft PowerPoint 演示文稿.pptx'
+2016-11-06 15:05:21,936 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\测试test\\新建文件夹\\新建文本文档.txt'
+2016-11-06 15:05:21,937 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\testDirect\\测试test\\新建文本文档 (2.txt'
+2016-11-06 15:05:21,938 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 44
+2016-11-06 17:03:41,663 - main.syncSocket - INFO - file deleted:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试
+2016-11-06 17:04:33,800 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\aaa
+2016-11-06 17:04:40,139 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\aaa\bbb
+2016-11-06 17:04:51,905 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\ccc
+2016-11-06 17:04:53,004 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\ccc\bbb
+2016-11-06 17:04:53,714 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\ccc\bbb
+2016-11-06 17:28:31,704 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test
+2016-11-06 17:28:32,790 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹
+2016-11-06 17:28:33,052 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹 (2)
+2016-11-06 17:28:33,494 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新jk和g .txt
+2016-11-06 17:28:33,851 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文本文档 (2.txt
+2016-11-06 17:28:34,300 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹\新建文本文档.txt
+2016-11-06 17:28:34,609 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹 (2)\新建 Microsoft PowerPoint 演示文稿.pptx
+2016-11-06 17:28:34,962 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新jk和g .txt
+2016-11-06 17:28:35,421 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹 (2)
+2016-11-06 17:28:35,753 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹 (2)\新建 Microsoft PowerPoint 演示文稿.pptx
+2016-11-06 17:28:36,243 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹
+2016-11-06 17:28:36,576 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文件夹\新建文本文档.txt
+2016-11-06 17:28:37,013 - main.syncSocket - INFO - file created:D:\MyCodes\GitRepos\OssAutoSynch\testDirect\测试test\新建文本文档 (2.txt
+2016-11-06 17:33:21,859 - main - ERROR - observer-init error-- [WinError 183] 当文件已存在时，无法创建该文件。: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\.git\\'
+2016-11-06 17:33:45,102 - main - ERROR - observer-init error-- [WinError 183] 当文件已存在时，无法创建该文件。: 'D:\\MyCodes\\GitRepos\\OssAutoSynch\\.git\\'
+2016-11-06 17:41:05,726 - main.objectManager - ERROR - get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\Coursera\\'
+2016-11-06 17:41:05,727 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 20
+2016-11-06 17:43:04,341 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 20
+2016-11-06 17:43:50,275 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 20
+2016-11-06 17:47:15,559 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 20
+2016-11-06 17:57:17,384 - main - ERROR - observer-init error-- bad escape (end of pattern) at position 20
+2016-11-06 18:00:39,924 - main - ERROR - observer-init error-- [WinError 183] 当文件已存在时，无法创建该文件。: 'D:\\MyCodes\\Coursera\\AngularJS\\conFusion\\.DS_Store\\'

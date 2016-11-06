@@ -21,6 +21,7 @@ from oss2.models import SimplifiedObjectInfo
 from watchdog.events import *
 import logging
 import os
+import re
 
 logger = logging.getLogger("main.syncSocket")
 
@@ -35,6 +36,7 @@ class SyncSocket(FileSystemEventHandler):
         self.__local_remote_tup = local_remote_tup
         self.__obj_manager = ObjectManager(bucket)
         self.__local_index = self._local_indexing()
+        self.synchronize()
 
     def on_moved(self, event):
         """rename"""
@@ -44,7 +46,7 @@ class SyncSocket(FileSystemEventHandler):
             if not self.__obj_manager.rename_object(remote_old, remote_new):
                 # put new file if old file does not exist
                 self.__obj_manager.put_object(remote_new, event.dest_path)
-            print("file moved from {0} to {1}".format(event.src_path, event.dest_path))
+            logger.info("file moved from {0} to {1}".format(event.src_path, event.dest_path))
         except Exception as e:
             logger.error("rename error-- " + util.exception_string(e))
 
@@ -52,13 +54,13 @@ class SyncSocket(FileSystemEventHandler):
         """create"""
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.put_object(remote, event.src_path)
-        print("file created:{0}".format(event.src_path))
+        logger.info("file created:{0}".format(event.src_path))
 
     def on_deleted(self, event):
         """delete"""
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.delete_object(remote)
-        print("file deleted:{0}".format(event.src_path))
+        logger.info("file deleted:{0}".format(event.src_path))
 
     def is_name_equal(self, local_obj, remote_obj):
         """
@@ -90,12 +92,32 @@ class SyncSocket(FileSystemEventHandler):
         :return:
         """
         # get remote objects
-        remote_iter = self.__obj_manager.get_object_iter()
+        remote_iter = self.__obj_manager.get_object_iter(self.__local_remote_tup[1])
 
         tmp_set = set([])
         for obj in remote_iter:
-            # TODO:
-            pass
+            local_key = self.__remote_to_local(obj.key)
+            if local_key in self.__local_index:   # both have this file
+                local_obj = self.__local_index[local_key]
+                if not self.is_content_equal(local_obj, obj):   # different content
+                    if local_obj.last_modified >= obj.last_modified:    # local is newer
+                        self.__obj_manager.put_object(obj.key, local_key)
+                    else:                                               # remote is newer
+                        self.__obj_manager.get_object(obj.key, local_key)
+            else:
+                if os.path.isdir(local_key):
+                    if not os.path.exists(local_key):
+                        os.makedirs(local_key)
+                else:
+                    tmp_dir = local_key[:local_key.rfind('\\') + 1]
+                    if not os.path.exists(tmp_dir):
+                        os.makedirs(tmp_dir)
+                    self.__obj_manager.get_object(obj.key, local_key)
+            tmp_set.add(local_key)
+
+        for local_key in self.__local_index:
+            if local_key not in tmp_set:
+                self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
 
     def _local_indexing(self):
         """
@@ -110,11 +132,11 @@ class SyncSocket(FileSystemEventHandler):
             oss_map = {}
         for _dir in os.listdir(local_path):
             abs_dir = local_path + '\\' + _dir
-            if os.path.isdir(abs_dir):
+            if not os.path.isdir(abs_dir):
                 oss_map[abs_dir] = OssObject(abs_dir)
-                self._recursive_indexing(abs_dir, oss_map)
             else:
-                oss_map[abs_dir] = OssObject(abs_dir)
+                oss_map[abs_dir + '\\'] = OssObject(abs_dir)
+                self._recursive_indexing(abs_dir, oss_map)
         return oss_map
 
     def __local_to_remote(self, local_path):
@@ -124,10 +146,16 @@ class SyncSocket(FileSystemEventHandler):
         :return:
         """
         rootl, rootr = self.__local_remote_tup[0], self.__local_remote_tup[1]
-        if rootl not in local_path:
+        if rootl[-1] != '\\':
+            rootl += '\\'
+        if rootr[-1] != '/':
+            rootr += '/'
+        rootl_re = rootl.replace('\\', '\\\\')
+        pt = re.compile(r"^" + rootl_re)
+        if not pt.match(local_path):
             raise FileNotFoundError('local_path does not belong to this root')
 
-        common = local_path.split(rootl)[1]
+        common = local_path[len(rootl):]
         remote = rootr + common
         if len(os.path.splitext(remote)[-1]) == 0:
             remote += '/'
@@ -141,10 +169,15 @@ class SyncSocket(FileSystemEventHandler):
         :return:
         """
         rootl, rootr = self.__local_remote_tup[0], self.__local_remote_tup[1]
-        if rootr not in remote_path:
+        if rootl[-1] != '\\':
+            rootl += '\\'
+        if rootr[-1] != '/':
+            rootr += '/'
+        pt = re.compile(r"^" + rootr)
+        if not pt.match(remote_path):
             raise FileNotFoundError('remote_path does not belong to this root')
 
-        common = remote_path.split(rootr)[1]
+        common = remote_path[len(rootr):]
         local = rootl + common
         local = local.replace('/', '\\')
         return local
