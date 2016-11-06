@@ -18,6 +18,7 @@ import config.config as config
 import src.sync_socket as ss
 import src.oss2_utils as util
 import logging.config
+import log.log_config as log_conf
 import time
 import oss2.utils
 from watchdog.observers import Observer
@@ -25,8 +26,9 @@ from watchdog.observers import Observer
 mapping = config.directory_mapping
 
 # logging config
-logging.config.fileConfig(r"log\config")
-logger = logging.getLogger("main")
+logging.config.dictConfig(log_conf.config)
+logger_main = logging.getLogger("main_logger")
+logger_err = logging.getLogger('err_logger')
 
 # oss config
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
@@ -53,7 +55,7 @@ for local_root, remote_root in mapping.items():
         observer.start()
         observers.append(observer)
     except Exception as e:
-        logger.error("observer-init error-- " + util.exception_string(e))
+        logger_err.error("observer-init error-- " + util.exception_string(e))
 
 try:
     while True:

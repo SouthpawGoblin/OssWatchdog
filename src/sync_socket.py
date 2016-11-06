@@ -23,7 +23,8 @@ import logging
 import os
 import re
 
-logger = logging.getLogger("main.syncSocket")
+logger_main = logging.getLogger("main_logger")
+logger_err = logging.getLogger('err_logger')
 
 
 class SyncSocket(FileSystemEventHandler):
@@ -48,7 +49,7 @@ class SyncSocket(FileSystemEventHandler):
                 self.__obj_manager.put_object(remote_new, event.dest_path)
             logger.info("file moved from {0} to {1}".format(event.src_path, event.dest_path))
         except Exception as e:
-            logger.error("rename error-- " + util.exception_string(e))
+            logger_err.error("rename error-- " + util.exception_string(e))
 
     def on_created(self, event):
         """create"""
