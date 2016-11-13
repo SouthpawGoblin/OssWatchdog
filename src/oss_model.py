@@ -121,7 +121,7 @@ class OssObject(object):
         self.__loc_path = local_path
         self.__is_dir = os.path.isdir(local_path)
         self.__etag = NULL_MD5 if self.__is_dir else util.file_md5(local_path)
-        self.__lmt = time.gmtime() if self.__is_dir else os.path.getmtime(local_path)
+        self.__lmt = time.mktime(time.gmtime()) if self.__is_dir else os.path.getmtime(local_path)
 
     @property
     def key(self):
