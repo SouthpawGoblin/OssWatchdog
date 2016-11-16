@@ -15,7 +15,6 @@
 # limitations under the License.
 
 import src.oss2_utils as util
-import oss2
 import logging
 import time
 import os
@@ -23,94 +22,18 @@ import os
 logger_main = logging.getLogger("main_logger")
 logger_err = logging.getLogger('err_logger')
 
-# md5 of ""
-NULL_MD5 = 'D41D8CD98F00B204E9800998ECF8427E'
-
-
-# class ObjectNode(object):
-#     """
-#     deprecated, using OssObject instead
-#     object tree node, representing the file structure
-#     """
-#     def __init__(self, relative_path=None, etag=None, last_modified_time=None):
-#         """
-#         :param relative_path: relative path name without local or remote root
-#         :param etag:
-#         :param last_modified_time:
-#         """
-#         self.__loc_path = relative_path
-#         self.__etag = etag
-#         self.__lmt = last_modified_time
-#         self.__father = None
-#         self.__children = set([])
-#
-#     def __eq__(self, other):
-#         if not other.__loc_path or other.__loc_path != self.__loc_path:
-#             return False
-#         if not other.__etag or other.__etag != self.__etag:
-#             return False
-#         if not other.__lmt or other.__lmt != self.__lmt:
-#             return False
-#         if other.__children != self.__children:
-#             return False
-#         return True
-#
-#     @property
-#     def relative_path(self):
-#         return self.__loc_path
-#
-#     @property
-#     def etag(self):
-#         return self.__etag
-#
-#     @property
-#     def last_modified_time(self):
-#         return self.__lmt
-#
-#     def _update(self):
-#         """
-#         update lmt and etag all the way up to the root
-#         :return:
-#         """
-#         current = self.__father
-#         new_md5_int = int(self.__etag, 16)
-#         while current:
-#             current.__lmt = self.__lmt
-#             old_md5_int = int(current.__etag, 16)
-#             current.__etag = str(hex(old_md5_int ^ new_md5_int))[2:].upper()
-#             new_md5_int = int(current.__etag, 16) ^ old_md5_int
-#             current = current.__father
-#
-#     def is_dir(self):
-#         """
-#         :return:
-#         """
-#         return len(os.path.splitext(self.__loc_path)[-1]) == 0
-#
-#     def add_child(self, node):
-#         """
-#         :param node:
-#         :return:
-#         """
-#         if node.__loc_path and node.__etag and node.__lmt:
-#             node.__father = self
-#             self.__children.add(node)
-#             node._update()
-#
-#     def del_child(self, node):
-#         """
-#         :param node:
-#         :return:
-#         """
-#         if node in self.__children:
-#             node._update()
-#             node.__father = None
-#             self.__children.remove(node)
 
 class OssObject(object):
     """
-    oss object model for a local file
+    oss object model for a local file or directory
     """
+
+    # since bucket.put_object() may get 407 when content is empty,
+    # I give all directory objects "$DIRECTORY$" as content
+    DIR_CONTENT = "$DIRECTORY$"
+
+    # MD5 of DIR_CONTENT, local folders will get this MD5 as etag
+    DIR_MD5 = '48f3ac15a4a8540d13a1b883b8d3ee73'
 
     def __init__(self, local_path):
         """
@@ -120,7 +43,7 @@ class OssObject(object):
             raise FileNotFoundError
         self.__loc_path = local_path
         self.__is_dir = os.path.isdir(local_path)
-        self.__etag = NULL_MD5 if self.__is_dir else util.file_md5(local_path)
+        self.__etag = OssObject.DIR_MD5 if self.__is_dir else util.file_md5(local_path)
         self.__lmt = time.mktime(time.gmtime()) if self.__is_dir else os.path.getmtime(local_path)
 
     @property

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import src.oss2_utils as util
+from src.oss_model import OssObject
 import oss2
 import logging
 import os
@@ -70,7 +71,7 @@ class ObjectManager:
             if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
                 return False
             if os.path.isdir(local):
-                return self.__bucket.put_object(remote, '')
+                return self.__bucket.put_object(remote, OssObject.DIR_CONTENT)
             else:
                 return self.__bucket.put_object_from_file(remote, local)
         except Exception as e:

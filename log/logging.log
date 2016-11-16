@@ -1,4 +1,2 @@
-| 2016-11-13 19:52:39 | object_manager.py | line: 96 | ERROR | get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSync\\testDirect\\测试est\\新建文件夹\\\\'
-| 2016-11-13 19:52:40 | object_manager.py | line: 96 | ERROR | get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSync\\testDirect\\测试test\\\\'
-| 2016-11-13 19:52:40 | object_manager.py | line: 96 | ERROR | get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSync\\testDirect\\测试test\\新建文件夹 (2)\\\\'
-| 2016-11-13 19:52:40 | object_manager.py | line: 96 | ERROR | get_object error-- [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSync\\testDirect\\测试test\\新建文件夹\\\\'
+| 2016-11-16 16:11:18 | object_manager.py | line: 77 | ERROR | put_object error-- {'details': {}, 'status': 407}
+| 2016-11-16 16:11:22 | object_manager.py | line: 77 | ERROR | put_object error-- {'details': {}, 'status': 407}
