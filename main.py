@@ -55,8 +55,8 @@ for local_root, remote_root in mapping.items():
         observer.start()
         observers.append(observer)
     except Exception as e:
-        logger_err.error("observer-init error-- " + util.exception_string(e))
-
+        logger_err.error("observer-init error | " + util.exception_string(e))
+        exit(1)
 try:
     while True:
         time.sleep(1)

@@ -40,7 +40,7 @@ class ObjectManager:
         try:
             return self.__bucket.object_exists(remote)
         except Exception as e:
-            logger_err.error("object_exists error-- " + util.exception_string(e))
+            logger_err.error("object_exists error | " + remote + " | " + util.exception_string(e))
             return None
 
     def get_etag(self, remote):
@@ -54,7 +54,7 @@ class ObjectManager:
                 return self.__bucket.head_object(remote).etag
             return False
         except Exception as e:
-            logger_err.error("get_etag error-- " + util.exception_string(e))
+            logger_err.error("get_etag error | " + remote + " | " + util.exception_string(e))
             return False
 
     def put_object(self, remote, local):
@@ -75,7 +75,7 @@ class ObjectManager:
             else:
                 return self.__bucket.put_object_from_file(remote, local)
         except Exception as e:
-            logger_err.error("put_object error-- " + util.exception_string(e))
+            logger_err.error("put_object error | " + local + " | " + util.exception_string(e))
             return False
 
     def get_object(self, remote, local):
@@ -94,7 +94,7 @@ class ObjectManager:
             result = self.__bucket.get_object_to_file(remote, local)
             return result
         except Exception as e:
-            logger_err.error("get_object error-- " + util.exception_string(e))
+            logger_err.error("get_object error | " + remote + " | " + util.exception_string(e))
             return False
 
     def delete_object(self, remote):
@@ -111,7 +111,7 @@ class ObjectManager:
             else:
                 return False
         except Exception as e:
-            logger_err.error("delete_object error-- " + util.exception_string(e))
+            logger_err.error("delete_object error | " + remote + " | " + util.exception_string(e))
             return False
 
     def rename_object(self, remote_old, remote_new):
@@ -130,7 +130,7 @@ class ObjectManager:
             else:
                 return False
         except Exception as e:
-            logger_err.error("rename_object error-- " + util.exception_string(e))
+            logger_err.error("rename_object error | " + remote_old + " | " + util.exception_string(e))
             return False
 
     def get_object_iter(self, prefix='', delimiter=''):
@@ -143,4 +143,4 @@ class ObjectManager:
         try:
             return oss2.ObjectIterator(self.__bucket, prefix, delimiter)
         except Exception as e:
-            logger_err.error("get_object_iter error-- " + util.exception_string(e))
+            logger_err.error("get_object_iter error | " + prefix + " | " + delimiter + " | " + util.exception_string(e))

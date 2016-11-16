@@ -1,2 +1,1 @@
-| 2016-11-16 16:11:18 | object_manager.py | line: 77 | ERROR | put_object error-- {'details': {}, 'status': 407}
-| 2016-11-16 16:11:22 | object_manager.py | line: 77 | ERROR | put_object error-- {'details': {}, 'status': 407}
+| 2016-11-16 17:51:23 | object_manager.py | line: 78 | ERROR | put_object error | D:\My Codes\MyRepo\OssAutoSync\testDirect\新建文本文档 (4).txt | {'status': 407, 'details': {}}

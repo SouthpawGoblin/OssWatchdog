@@ -149,6 +149,7 @@ class SyncSocket(FileSystemEventHandler):
             else:
                 oss_map[os.path.join(abs_dir, '')] = OssObject(abs_dir)
                 self._recursive_indexing(abs_dir, oss_map)
+            print(abs_dir)
         return oss_map
 
     def __local_to_remote(self, local_path, is_dir=None):
