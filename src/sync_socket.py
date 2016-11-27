@@ -37,7 +37,7 @@ class SyncSocket(FileSystemEventHandler):
         self.__local_remote_tup = local_remote_tup
         self.__obj_manager = ObjectManager(bucket)
         self.__local_index = self._local_indexing()
-        self.synchronize()
+        self.__is_synchronizing = False
 
     def on_moved(self, event):
         """rename"""
@@ -99,6 +99,7 @@ class SyncSocket(FileSystemEventHandler):
         synchronize local_path with the remote bucket
         :return:
         """
+        self.__is_synchronizing = True
         # get remote objects
         remote_iter = self.__obj_manager.get_object_iter(self.__local_remote_tup[1] + '/')
 
@@ -126,6 +127,7 @@ class SyncSocket(FileSystemEventHandler):
         for local_key in self.__local_index:
             if local_key not in tmp_set:
                 self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
+        self.__is_synchronizing = False
 
     def _local_indexing(self):
         """

@@ -32,6 +32,7 @@ logger_err = logging.getLogger('err_logger')
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
 
+# TODO: maintain a queue to record local file changes while synchronize() is running
 # TODO: on init, check local time and server time, give warning if the two differs 15mins plus
 
 ################################# test ###########################################
@@ -67,6 +68,7 @@ for local_root, remote_root in mapping.items():
         observer.schedule(sync_socket, local_root, True)
         observer.start()
         observers.append(observer)
+        sync_socket.synchronize()
     except Exception as e:
         logger_err.error("observer-init error | " + util.exception_string(e))
         exit(1)

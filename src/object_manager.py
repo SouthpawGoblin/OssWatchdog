@@ -68,7 +68,7 @@ class ObjectManager:
         # TODO: progress report
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
-            if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
+            if self.object_exists(remote) and self.get_etag(remote) == OssObject(local).etag:
                 return True
             if os.path.isdir(local):
                 self.__bucket.put_object(remote, OssObject.DIR_CONTENT)
