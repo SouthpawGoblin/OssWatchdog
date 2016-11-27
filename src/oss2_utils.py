@@ -68,3 +68,35 @@ def file_md5(file):
     return m.hexdigest().upper()
 
 
+def local_path_norm(local_path):
+    """
+    normalize local path string
+    e.g. r"C:\foo\bar\" --directory
+    e.g. r"C:\foo\bar.txt" --file
+    :param local_path:
+    :return:
+    """
+    tmp = str(local_path)
+    while True:
+        local_path = local_path.strip().strip('/').strip('\\')
+        if local_path == tmp:
+            break
+        tmp = local_path
+    local_path = local_path.replace('/', '\\')
+    if os.path.isdir(local_path):
+        local_path += '\\'
+    return local_path
+
+
+def remote_path_norm(remote_path):
+    """
+    normalize remote path
+    e.g. bucket_name/foo/bar/ --directory
+    e.g. bucket_name/foobar.txt --file
+    :param remote_path:
+    :return:
+    """
+    remote_path = remote_path.strip().replace('\\', '/')
+    if remote_path.rfind('/') != len(remote_path) - 1:
+        remote_path += '/'
+    return remote_path

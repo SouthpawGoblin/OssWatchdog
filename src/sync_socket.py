@@ -47,7 +47,6 @@ class SyncSocket(FileSystemEventHandler):
             if not self.__obj_manager.rename_object(remote_old, remote_new):
                 # put new file if old file does not exist
                 self.__obj_manager.put_object(remote_new, event.dest_path)
-            logger_main.info("file moved from {0} to {1}".format(event.src_path, event.dest_path))
         except Exception as e:
             logger_err.error("rename error-- " + util.exception_string(e))
 
@@ -61,7 +60,6 @@ class SyncSocket(FileSystemEventHandler):
         """delete"""
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.delete_object(remote)
-        logger_main.info("file deleted:{0}".format(event.src_path))
 
     def on_modified(self, event):
         """
@@ -71,8 +69,6 @@ class SyncSocket(FileSystemEventHandler):
         """
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.put_object(remote, event.src_path)
-        # logger_main.info("file created:{0}".format(event.src_path))
-        logger_main.info("modified")
 
     def is_name_equal(self, local_obj, remote_obj):
         """
@@ -156,14 +152,11 @@ class SyncSocket(FileSystemEventHandler):
         """
         transfer local path to the corresponding remote path using directory map
         :param local_path:
-        :param is_dir   if is None, use os.path.isdir()
+        :param is_dir   if None, use os.path.isdir()
         :return:
         """
+        local_path = local_path.strip().strip('\\')
         rootl, rootr = self.__local_remote_tup[0], self.__local_remote_tup[1]
-        if rootl[-1] != '\\':
-            rootl += '\\'
-        if rootr[-1] != '/':
-            rootr += '/'
         rootl_re = rootl.replace('\\', '\\\\')
         pt = re.compile(r"^" + rootl_re)
         if not pt.match(local_path):
@@ -182,11 +175,8 @@ class SyncSocket(FileSystemEventHandler):
         :param remote_path:
         :return:
         """
+        remote_path = remote_path.strip()
         rootl, rootr = self.__local_remote_tup[0], self.__local_remote_tup[1]
-        if rootl[-1] != '\\':
-            rootl += '\\'
-        if rootr[-1] != '/':
-            rootr += '/'
         pt = re.compile(r"^" + rootr)
         if not pt.match(remote_path):
             raise FileNotFoundError('remote_path does not belong to this root')

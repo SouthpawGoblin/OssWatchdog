@@ -23,8 +23,6 @@ import time
 import oss2.utils
 from watchdog.observers import Observer
 
-mapping = config.directory_mapping
-
 # logging config
 logging.config.dictConfig(log_conf.config)
 logger_main = logging.getLogger("main_logger")
@@ -34,7 +32,6 @@ logger_err = logging.getLogger('err_logger')
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
 
-# TODO: on init, check config.directory_mapping for duplicate values
 # TODO: on init, check local time and server time, give warning if the two differs 15mins plus
 
 ################################# test ###########################################
@@ -45,6 +42,22 @@ service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_tim
 #
 # a = 2
 
+# check config.directory_mapping for duplicate values
+if len(set(config.directory_mapping.keys())) < len(config.directory_mapping):
+    logger_err.error("init error | duplicate local paths found in directory mapping")
+if len(set([v[1] for v in config.directory_mapping.values()])) < len(config.directory_mapping):
+    logger_err.error("init error | duplicate remote paths found in directory mapping")
+
+# normalize config paths
+mapping = {}
+for item in config.directory_mapping.items():
+    local = util.local_path_norm(item[0])
+    bkt = item[1][0]
+    remote = util.remote_path_norm(item[1][1])
+    mapping[local] = (bkt, remote)
+config.directory_mapping = mapping
+
+# initialize watchdog observers
 observers = []
 for local_root, remote_root in mapping.items():
     try:

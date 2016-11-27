@@ -69,11 +69,13 @@ class ObjectManager:
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if self.object_exists(remote) and self.get_etag(remote) == util.file_md5(local):
-                return False
+                return True
             if os.path.isdir(local):
-                return self.__bucket.put_object(remote, OssObject.DIR_CONTENT)
+                self.__bucket.put_object(remote, OssObject.DIR_CONTENT)
             else:
-                return self.__bucket.put_object_from_file(remote, local)
+                self.__bucket.put_object_from_file(remote, local)
+            logger_main.info("object put | \"" + local + "\" --> \"" + remote + "\"")
+            return True
         except Exception as e:
             logger_err.error("put_object error | " + local + " | " + util.exception_string(e))
             return False
@@ -90,9 +92,10 @@ class ObjectManager:
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if os.path.exists(local) and self.get_etag(remote) == util.file_md5(local):
-                return False
-            result = self.__bucket.get_object_to_file(remote, local)
-            return result
+                return True
+            self.__bucket.get_object_to_file(remote, local)
+            logger_main.info("object got | \"" + remote + "\" --> \"" + local + "\"")
+            return True
         except Exception as e:
             logger_err.error("get_object error | " + remote + " | " + util.exception_string(e))
             return False
@@ -107,9 +110,8 @@ class ObjectManager:
         try:
             if self.object_exists(remote):
                 self.__bucket.delete_object(remote)
-                return True
-            else:
-                return False
+                logger_main.info("object deleted | \"" + remote + "\"")
+            return True
         except Exception as e:
             logger_err.error("delete_object error | " + remote + " | " + util.exception_string(e))
             return False
@@ -123,12 +125,10 @@ class ObjectManager:
         """
         # TODO: progress report
         try:
-            if self.object_exists(remote_old):
-                self.__bucket.copy_object(self.__bucket.bucket_name, remote_old, remote_new)
-                self.delete_object(remote_old)
-                return True
-            else:
-                return False
+            self.__bucket.copy_object(self.__bucket.bucket_name, remote_old, remote_new)
+            self.delete_object(remote_old)
+            logger_main.info("object renamed | \"" + remote_old + "\" --> \"" + remote_new + "\"")
+            return True
         except Exception as e:
             logger_err.error("rename_object error | " + remote_old + " | " + util.exception_string(e))
             return False
