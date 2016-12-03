@@ -38,10 +38,14 @@ class SyncSocket(FileSystemEventHandler):
         self.__obj_manager = ObjectManager(bucket)
         self.__local_index = self._local_indexing()
         self.__is_synchronizing = False
+        self.__sync_queue = []
 
     def on_moved(self, event):
         """rename"""
         try:
+            if self.__is_synchronizing:
+                self.__sync_queue.append(('on_moved', event))
+                return
             remote_old = self.__local_to_remote(event.src_path)
             remote_new = self.__local_to_remote(event.dest_path)
             if not self.__obj_manager.rename_object(remote_old, remote_new):
@@ -58,6 +62,9 @@ class SyncSocket(FileSystemEventHandler):
 
     def on_deleted(self, event):
         """delete"""
+        if self.__is_synchronizing:
+            self.__sync_queue.append(('on_deleted', event))
+            return
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.delete_object(remote)
 
@@ -67,6 +74,9 @@ class SyncSocket(FileSystemEventHandler):
         :param event:
         :return:
         """
+        if self.__is_synchronizing:
+            self.__sync_queue.append(('on_modified', event))
+            return
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.put_object(remote, event.src_path)
 
@@ -128,6 +138,14 @@ class SyncSocket(FileSystemEventHandler):
             if local_key not in tmp_set:
                 self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
         self.__is_synchronizing = False
+        while len(self.__sync_queue) > 0:
+            pair = self.__sync_queue.pop(0)
+            if pair[0] == 'on_moved':
+                self.on_moved(pair[1])
+            elif pair[0] == 'on_deleted':
+                self.on_deleted(pair[1])
+            elif pair[0] == 'on_modified':
+                self.on_modified(pair[1])
 
     def _local_indexing(self):
         """
