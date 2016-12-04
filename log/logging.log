@@ -1,1 +1,0 @@
-| 2016-11-27 20:07:11 | object_manager.py | line: 80 | ERROR | put_object error | D:\MyCodes\GitRepos\OssAutoSync\testDirect\新建文本文档 (3).txt | [Errno 2] No such file or directory: 'D:\\MyCodes\\GitRepos\\OssAutoSync\\testDirect\\新建文本文档 (3).txt'

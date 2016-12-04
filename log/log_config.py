@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import datetime
 
 config = {
     'version': 1,
@@ -40,8 +40,8 @@ config = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'err_formatter',
             'level': 'ERROR',
-            'filename': r'log\logging.log',
-            'maxBytes': 1024,
+            'filename': r'log\log_' + datetime.datetime.now().strftime('%Y%m%d') + r'.log',
+            'maxBytes': 3 * 1024 * 1024,
             'backupCount': 3
         }
     },

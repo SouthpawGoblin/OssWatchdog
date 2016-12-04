@@ -28,8 +28,9 @@ class ObjectManager:
     """
     class for managing bucket objects
     """
-    def __init__(self, bucket):
+    def __init__(self, bucket, progress_callback=None):
         self.__bucket = bucket
+        self.__progress_callback = progress_callback
 
     def object_exists(self, remote):
         """
@@ -65,15 +66,14 @@ class ObjectManager:
         :return:
         """
         # TODO: resumable support
-        # TODO: progress report
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if self.object_exists(remote) and self.get_etag(remote) == OssObject(local).etag:
                 return True
             if os.path.isdir(local):
-                self.__bucket.put_object(remote, OssObject.DIR_CONTENT)
+                self.__bucket.put_object(remote, OssObject.DIR_CONTENT, progress_callback=self.__progress_callback)
             else:
-                self.__bucket.put_object_from_file(remote, local)
+                self.__bucket.put_object_from_file(remote, local, progress_callback=self.__progress_callback)
             logger_main.info("object put | \"" + local + "\" --> \"" + remote + "\"")
             return True
         except Exception as e:
@@ -88,12 +88,11 @@ class ObjectManager:
         :return:
         """
         # TODO: resumable support
-        # TODO: progress report
         try:
             # 通过etag检测文件是否完全相同，避免不必要的流量消耗
             if os.path.exists(local) and self.get_etag(remote) == util.file_md5(local):
                 return True
-            self.__bucket.get_object_to_file(remote, local)
+            self.__bucket.get_object_to_file(remote, local, progress_callback=self.__progress_callback)
             logger_main.info("object got | \"" + remote + "\" --> \"" + local + "\"")
             return True
         except Exception as e:
@@ -106,7 +105,6 @@ class ObjectManager:
         :param remote:
         :return:
         """
-        # TODO: progress report
         try:
             if self.object_exists(remote):
                 self.__bucket.delete_object(remote)
@@ -123,7 +121,6 @@ class ObjectManager:
         :param remote_new:
         :return:
         """
-        # TODO: progress report
         try:
             self.__bucket.copy_object(self.__bucket.bucket_name, remote_old, remote_new)
             self.delete_object(remote_old)

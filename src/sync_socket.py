@@ -20,6 +20,7 @@ from src.oss_model import OssObject
 from oss2.models import SimplifiedObjectInfo
 from watchdog.events import *
 import logging
+import sys
 import os
 import re
 
@@ -35,10 +36,12 @@ class SyncSocket(FileSystemEventHandler):
         FileSystemEventHandler.__init__(self)
         self.__bucket = bucket
         self.__local_remote_tup = local_remote_tup
-        self.__obj_manager = ObjectManager(bucket)
+        self.__obj_manager = ObjectManager(bucket, self._task_percentage)
         self.__local_index = self._local_indexing()
         self.__is_synchronizing = False
         self.__sync_queue = []
+        self.__total_task_cnt = 0
+        self.__fin_task_cnt = 0
 
     def on_moved(self, event):
         """rename"""
@@ -138,6 +141,7 @@ class SyncSocket(FileSystemEventHandler):
             if local_key not in tmp_set:
                 self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
         self.__is_synchronizing = False
+
         while len(self.__sync_queue) > 0:
             pair = self.__sync_queue.pop(0)
             if pair[0] == 'on_moved':
@@ -205,3 +209,40 @@ class SyncSocket(FileSystemEventHandler):
         local = rootl + common
         local = local.replace('/', '\\')
         return local
+
+    def _task_percentage(self, consumed_bytes, total_bytes):
+        """
+        progress callback for uploading and downloading files
+        :param consumed_bytes:
+        :param total_bytes:
+        :return:
+        """
+        if total_bytes:
+            rate = int(100 * (float(consumed_bytes) / float(total_bytes)))
+            sys.stdout.write('\r{0}% '.format(rate))
+            sys.stdout.flush()
+
+    def _update_task_cnt(self, fin=False, total=False):
+        """
+        update fin and/or total count of tasks
+        :param fin:
+        :param total:
+        :return:
+        """
+        if self.__fin_task_cnt == self.__total_task_cnt:
+            self.__fin_task_cnt = 0
+            self.__total_task_cnt = 0
+        if total:
+            self.__total_task_cnt += 1
+        if fin:
+            self.__fin_task_cnt += 1
+        if self.__fin_task_cnt > self.__total_task_cnt:
+            self.__fin_task_cnt = self.__total_task_cnt
+
+    def _show_task_progress(self, discription=''):
+        """
+        show task progress
+        :return:
+        """
+        sys.stdout.write('\r' + discription + ' {0}/{1} '.format(self.__fin_task_cnt, self.__total_task_cnt))
+        sys.stdout.flush()
