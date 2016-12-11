@@ -31,7 +31,6 @@ logger_err = logging.getLogger('err_logger')
 # oss config
 auth = oss2.Auth(config.auth_key, config.auth_key_secret)
 service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_timeout)
-
 # TODO: on init, check local time and server time, give warning if the two differs 15mins plus
 
 ################################# test ###########################################
