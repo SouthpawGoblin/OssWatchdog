@@ -7,7 +7,6 @@ file system monitors
 from watchdog.observers import Observer
 from watchdog.events import *
 from .common import SyncParams
-from.common import Printer
 
 
 class SyncSocket(FileSystemEventHandler):
@@ -235,7 +234,7 @@ class Monitor(object):
     a local-remote sync monitor
     """
 
-    def __init__(self, sync_param, error_logger=None):
+    def __init__(self, sync_param):
         """
         :param sync_param: should be of type SyncParams
         """
@@ -244,7 +243,7 @@ class Monitor(object):
         self.__sync_param = sync_param
         self.__socket = None
         self.__observer = None
-        self.__printer = Printer(error_logger)
+        # self.__printer = Printer(error_logger)
 
     def initialize(self):
         """
@@ -257,7 +256,7 @@ class Monitor(object):
             observer.schedule(self.__socket, self.__sync_param.local_path, True)
             self.__observer = observer
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
 
     def run(self):
@@ -271,7 +270,7 @@ class Monitor(object):
             self.__observer.start()
             self.__socket.synchronize()
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
 
     def stop(self):
@@ -284,7 +283,7 @@ class Monitor(object):
             self.__observer.stop()
             self.__observer.join()
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
 
 
@@ -292,13 +291,13 @@ class MonitorHub(object):
     """
     collection of Monitors, aim to control them at the same time
     """
-    def __init__(self, sync_params, error_logger=None):
+    def __init__(self, sync_params):
         """
         :param sync_params: should be an iterable of type SyncParam
         """
         self.__sync_params = sync_params
         self.__monitors = []
-        self.__printer = Printer(error_logger)
+        # self.__printer = Printer(error_logger)
 
     def initialize(self):
         """
@@ -307,7 +306,7 @@ class MonitorHub(object):
         try:
             self.__monitors = [Monitor(param) for param in self.__sync_params]
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
 
     def run(self):
@@ -318,7 +317,7 @@ class MonitorHub(object):
         try:
             [monitor.run() for monitor in self.__monitors]
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
 
     def stop(self):
@@ -329,6 +328,5 @@ class MonitorHub(object):
         try:
             [monitor.stop() for monitor in self.__monitors]
         except Exception as e:
-            self.__printer.print(e)
+            # self.__printer.print(e)
             raise e
-# TODO: 写个装饰器来wrap try-catch操作
