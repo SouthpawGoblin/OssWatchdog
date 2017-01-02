@@ -21,6 +21,17 @@ def get_server_time():
     return stamp
 
 
+def content_md5(content):
+    """
+    md5 of string content
+    :param content:
+    :return:
+    """
+    m = md5()
+    m.update(content.encode())
+    return m.hexdigest().upper()
+
+
 def file_md5(file_path):
     """
     calculation file md5 (upper case)
@@ -60,3 +71,15 @@ def remote_normpath(remote_path):
     if isdir:
         remote_path += '/'
     return remote_path
+
+
+def remote_isdir(remote_path):
+    """
+    judge if a remote_path is a dir by if it ends with '/'
+    :param remote_path:
+    :return:
+    """
+    return remote_normpath(remote_path).endswith('/')
+
+if __name__ == "__main__":
+    print(content_md5("$DIR$"))
