@@ -123,6 +123,7 @@ class SyncCore(FileSystemEventHandler):
             if local_key not in tmp_set:
                 self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
 
+        # dispatch queued events
         while len(self.__sync_event_queue) > 0:
             event = self.__sync_event_queue.pop(0)
             if event.event_type == EVENT_TYPE_MOVED:
@@ -159,7 +160,7 @@ class SyncCore(FileSystemEventHandler):
         """
         transfer local path to the corresponding remote path using directory map
         :param local_path:
-        :param is_dir   if None, use os.path.isdir()
+        :param is_dir: if None, use os.path.isdir()
         :return:
         """
         local_path = os.path.normpath(local_path)
@@ -242,7 +243,7 @@ class Monitor(object):
         """
         :param sync_param: should be of type SyncParams
         """
-        if sync_param is not SyncParams:
+        if not isinstance(sync_param, SyncParams):
             raise TypeError('sync_param should be of type oss_auto_sync.SyncParams')
         self.__sync_param = sync_param
         self.__core = None
