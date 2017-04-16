@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="99a8110d-d22a-4e39-af8b-8ad1de89da39" name="Default" comment="">
+    <list default="true" id="99a8110d-d22a-4e39-af8b-8ad1de89da39" name="Default" comment="untrack files">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/OssAutoSync.iml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
@@ -10,6 +10,9 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/config/config.py" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/log/log_config.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新j和g.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新建文本文档 (7).txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新建档.txt" afterPath="" />
     </list>
     <ignored path="OssAutoSynch.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,8 +44,8 @@
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="3" column="16" lean-forward="true" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+            <state relative-caret-position="130">
+              <caret line="5" column="7" lean-forward="true" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -587,13 +590,20 @@
       <option name="project" value="LOCAL" />
       <updated>1492353745693</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="untrack files">
+      <created>1492354018868</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1492354018868</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1552" height="880" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17493297" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17493297" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1997319" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32849163" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20335196" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -638,7 +648,8 @@
     <MESSAGE value="massive modifications, to be tested" />
     <MESSAGE value="add base.py and exception.py" />
     <MESSAGE value="add base classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="add base classes" />
+    <MESSAGE value="untrack files" />
+    <option name="LAST_COMMIT_MESSAGE" value="untrack files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -967,8 +978,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="3" column="16" lean-forward="true" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+        <state relative-caret-position="130">
+          <caret line="5" column="7" lean-forward="true" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
           <folding />
         </state>
       </provider>
