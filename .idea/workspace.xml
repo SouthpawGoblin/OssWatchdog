@@ -2,17 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="99a8110d-d22a-4e39-af8b-8ad1de89da39" name="Default" comment="untrack files">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/OssAutoSync.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/config/config.py" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/log/log_config.py" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新j和g.txt" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新建文本文档 (7).txt" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/testDirect/新建档.txt" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="OssAutoSynch.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -597,7 +592,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492354018868</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="untrack files">
+      <created>1492354364360</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1492354364360</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="ToolWindowManager">
