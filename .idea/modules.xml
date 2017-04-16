@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/OssAutoSync.iml" filepath="$PROJECT_DIR$/.idea/OssAutoSync.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../aliyun-oss-python-sdk/.idea/aliyun-oss-python-sdk.iml" filepath="$PROJECT_DIR$/../aliyun-oss-python-sdk/.idea/aliyun-oss-python-sdk.iml" />
-    </modules>
-  </component>
-</project>

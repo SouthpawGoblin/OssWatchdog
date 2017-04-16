@@ -6,14 +6,14 @@ file system monitors
 
 from watchdog.observers import Observer
 from watchdog.events import *
-from .common import SyncParams
-from .common import LocalObject
-from .object_manager import ObjectManager
-from . import utils
 from watchdog.events import EVENT_TYPE_MOVED as EVENT_TYPE_MOVED
 from watchdog.events import EVENT_TYPE_CREATED as EVENT_TYPE_CREATED
 from watchdog.events import EVENT_TYPE_DELETED as EVENT_TYPE_DELETED
 from watchdog.events import EVENT_TYPE_MODIFIED as EVENT_TYPE_MODIFIED
+
+from .base import MetaFile, BaseFileManager
+from .common import LocalObject
+from . import utils
 
 # TODO: add progress reporting system
 
@@ -22,10 +22,10 @@ class SyncCore(FileSystemEventHandler):
     """
     core class representing a local-remote sync link
     """
-    def __init__(self, sync_param):
+    def __init__(self, file_manager):
         FileSystemEventHandler.__init__(self)
-        self.__sync_param = sync_param
-        self.__obj_manager = None
+        assert isinstance(file_manager, BaseFileManager), "file manager must be an instance of class <BaseFileManager>"
+        self.__file_manager = file_manager
         self.__local_index = None
         self.__is_synchronizing = False
         self.__sync_event_queue = []
@@ -36,8 +36,7 @@ class SyncCore(FileSystemEventHandler):
         """
         :return:
         """
-        self.__obj_manager = ObjectManager(self.__sync_param.bucket_name)
-        self.__local_index = self._local_indexing()
+        self.__local_index = self._generate_index()
         return self
 
     def on_moved(self, event):
@@ -135,7 +134,7 @@ class SyncCore(FileSystemEventHandler):
 
         self.__is_synchronizing = False
 
-    def _local_indexing(self):
+    def _generate_index(self):
         """
         generate local file index map {local_path: common.LocalObject}
         :return:

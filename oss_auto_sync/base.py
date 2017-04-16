@@ -1,84 +1,126 @@
 # -*- coding: utf-8 -*-
 
 """
-base abstract classes
+base classes
 """
 
 
-class CommonPath:
+class MetaFile(object):
     """
-    data structure representing a file path
-    stores information about whether the file is local or remote   
+    data structure stores file meta info
     """
-    def __init__(self, is_local, path_str):
-        self._is_local = is_local
-        self._path = path_str
-
-    def __str__(self):
-        return str(self._path)
-
-    @property
-    def is_local(self):
-        return self._is_local
-
-
-class CommonFile:
-    """
-    data structure representing a file
-    Note: use `is_local` to distinguish local file from remote
-    """
-    def __init__(self, path):
-        """
-        :param path: should be an instance of a <CommonPath>'s subclass
-        """
-        if not issubclass(type(path), CommonPath):
-            raise TypeError("path should be an instance of a <CommonPath>'s subclass")
+    def __init__(self, path, size, hashcode, is_dir, last_modified_time):
         self._path = path
+        self._size = size
+        self._hash = hashcode
+        self._is_dir = is_dir
+        self._lmt = last_modified_time
 
     @property
     def path(self):
-        return self._path
+        return str(self._path)
 
     @property
-    def is_local(self):
-        return self._path.is_local
+    def size(self):
+        return self._size
 
-    def get_size(self):
-        """
-        get remote file size
-        override this
-        :return: 
-        """
-        pass
+    @property
+    def hashcode(self):
+        return self._hash
 
-    def get_etag(self):
-        """
-        get remote file's unique id, eg. md5
-        should be stringifiable
-        override this
-        :return: 
-        """
-        pass
-
+    @property
     def is_dir(self):
-        """
-        should return boolean value
-        override this
-        :return: 
-        """
-        pass
+        return self._is_dir
 
-    def get_last_modified_time(self):
-        """
-        should be of type <datetime.datetime>
-        override this
-        :return: 
-        """
-        pass
+    @property
+    def last_modified_time(self):
+        return self._lmt
 
 
-class FileManager:
+class BaseFileManager(object):
     """
-    maintains multiple file operation methods
+    maintains necessary file operation methods
     <Monitor> will use this to manipulate file and directories
     """
+    def __init__(self, manager_type="UNDEFINED"):
+        """
+        :param manager_type: a string representing manager type, default is "UNDEFINED" 
+        """
+        self._manager_type = manager_type
+
+    @property
+    def manager_type(self):
+        return self._manager_type
+
+    def get_meta_info(self, path):
+        """
+        get object meta info
+        :param path:
+        :return: should be an instance of <MetaFile>
+        """
+        return MetaFile(path, None, None, None, None)
+
+    def is_exist(self, path):
+        """
+        :param path:
+        :return:
+        """
+        pass
+
+    def upload(self, src_path, dest_path):
+        """
+        upload a file
+        :param src_path: 
+        :param dest_path: 
+        :return: 
+        """
+        pass
+
+    def download(self, src_path, dest_path):
+        """
+        download a file
+        :param src_path:
+        :param dest_path:
+        :return:
+        """
+        pass
+
+    def delete(self, path):
+        """
+        delete a file
+        :param path:
+        :return:
+        """
+        pass
+
+    def move(self, src_path, dest_path):
+        """
+        move a file
+        :param src_path:
+        :param dest_path:
+        :return:
+        """
+        pass
+
+    def iter_files(self, root_path):
+        """
+        return file iterator
+        :param root_path:
+        :return:
+        """
+        pass
+
+    def path_remote_to_local(self, path):
+        """
+        transfer remote path to local path format
+        :param path: 
+        :return: 
+        """
+        pass
+
+    def path_local_to_remote(self, path):
+        """
+        transfer local path to remote path format
+        :param path: 
+        :return: 
+        """
