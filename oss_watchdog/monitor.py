@@ -47,18 +47,18 @@ class SyncCore(FileSystemEventHandler):
                 return
             remote_old = self.__local_to_remote(event.src_path)
             remote_new = self.__local_to_remote(event.dest_path)
-            if self.__obj_manager.object_exists(remote_old):
-                self.__obj_manager.rename_object(remote_old, remote_new)
+            if self.__obj_manager.file_exists(remote_old):
+                self.__obj_manager.rename_file(remote_old, remote_new)
             else:
                 # put new file if old file does not exist
-                self.__obj_manager.put_object(remote_new, event.dest_path)
+                self.__obj_manager.upload_file(remote_new, event.dest_path)
         except Exception as e:
             raise e
 
     # def on_created(self, event):
     #     """create"""
     #     remote = self.__local_to_remote(event.src_path)
-    #     self.__obj_manager.put_object(remote, event.src_path)
+    #     self.__obj_manager.upload_file(remote, event.src_path)
     #     logger_main.info("file created:{0}".format(event.src_path))
 
     def on_deleted(self, event):
@@ -71,10 +71,10 @@ class SyncCore(FileSystemEventHandler):
         # if there is a remote dir, delete it
         # else try delete a file with the same name
         remote_dir = self.__local_to_remote(event.src_path, True)
-        if self.__obj_manager.object_exists(remote_dir):
-            self.__obj_manager.delete_object(remote_dir)
+        if self.__obj_manager.file_exists(remote_dir):
+            self.__obj_manager.delete_file(remote_dir)
         else:
-            self.__obj_manager.delete_object(remote_dir[:-1])
+            self.__obj_manager.delete_file(remote_dir[:-1])
 
     def on_modified(self, event):
         """
@@ -86,7 +86,7 @@ class SyncCore(FileSystemEventHandler):
             self.__sync_event_queue.append(event)
             return
         remote = self.__local_to_remote(event.src_path)
-        self.__obj_manager.put_object(remote, event.src_path)
+        self.__obj_manager.upload_file(remote, event.src_path)
 
     def synchronize(self):
         """
@@ -95,7 +95,7 @@ class SyncCore(FileSystemEventHandler):
         """
         self.__is_synchronizing = True
         # get remote objects
-        remote_iter = self.__obj_manager.get_object_iter(self.__sync_param.remote_path + '/')
+        remote_iter = self.__obj_manager.file_iterator(self.__sync_param.remote_path + '/')
 
         tmp_set = set([])
         for obj in remote_iter:
@@ -104,9 +104,9 @@ class SyncCore(FileSystemEventHandler):
                 local_obj = self.__local_index[local_key]
                 if local_obj.md5 != self.__obj_manager.get_md5(obj.key):   # different content
                     if local_obj.last_modified >= obj.last_modified:    # local is newer
-                        self.__obj_manager.put_object(obj.key, local_key)
+                        self.__obj_manager.upload_file(obj.key, local_key)
                     else:                                               # remote is newer
-                        self.__obj_manager.get_object(obj.key, local_key)
+                        self.__obj_manager.download_file(obj.key, local_key)
             else:
                 if utils.remote_isdir(obj.key):
                     if not os.path.exists(local_key):
@@ -115,12 +115,12 @@ class SyncCore(FileSystemEventHandler):
                     tmp_dir = local_key[:local_key.rfind('\\')]
                     if not os.path.exists(tmp_dir):
                         os.makedirs(tmp_dir)
-                    self.__obj_manager.get_object(obj.key, local_key)
+                    self.__obj_manager.download_file(obj.key, local_key)
             tmp_set.add(local_key)
 
         for local_key in self.__local_index:
             if local_key not in tmp_set:
-                self.__obj_manager.put_object(self.__local_to_remote(local_key), local_key)
+                self.__obj_manager.upload_file(self.__local_to_remote(local_key), local_key)
 
         # dispatch queued events
         while len(self.__sync_event_queue) > 0:
@@ -243,7 +243,7 @@ class Monitor(object):
         :param sync_param: should be of type SyncParams
         """
         if not isinstance(sync_param, SyncParams):
-            raise TypeError('sync_param should be of type oss_auto_sync.SyncParams')
+            raise TypeError('sync_param should be of type oss_watchdog.SyncParams')
         self.__sync_param = sync_param
         self.__core = None
         self.__observer = None

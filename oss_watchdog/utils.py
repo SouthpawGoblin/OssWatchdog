@@ -41,7 +41,7 @@ def file_md5(file_path):
     if path.isdir(file_path):
         raise TypeError('input is a directory, use "dir_md5()" instead')
     m = md5()
-    a_file = open(file_path, 'rb')  # 需要使用二进制格式读取文件内容
+    a_file = open(file_path, 'rb')
     m.update(a_file.read())
     a_file.close()
     return m.hexdigest().upper()
@@ -64,9 +64,7 @@ def remote_normpath(remote_path):
     :param remote_path:
     :return:
     """
-    isdir = False
-    if remote_path.endswith(('\\', '/')):
-        isdir = True
+    isdir = True if remote_path.endswith(('\\', '/')) else False
     remote_path = path.normpath(remote_path).replace('\\', '/')
     if isdir:
         remote_path += '/'
