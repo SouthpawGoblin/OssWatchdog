@@ -11,8 +11,7 @@ from watchdog.events import EVENT_TYPE_CREATED as EVENT_TYPE_CREATED
 from watchdog.events import EVENT_TYPE_DELETED as EVENT_TYPE_DELETED
 from watchdog.events import EVENT_TYPE_MODIFIED as EVENT_TYPE_MODIFIED
 
-from .base import MetaFile, BaseFileManager
-from .common import LocalObject
+from .file_oss import BaseFileManager
 from . import utils
 
 # TODO: add progress reporting system
@@ -22,28 +21,70 @@ class SyncCore(FileSystemEventHandler):
     """
     core class representing a local-remote sync link
     """
-    def __init__(self, file_manager):
+
+    OPERATION_UPLOAD = "upload"
+    OPERATION_DOWNLOAD = "download"
+    OPERATION_DELETE_LOCAL = "delete_local"
+    OPERATION_DELETE_REMOTE = "delete_remote"
+    OPERATION_MOVE_LOCAL = "move_local"
+    OPERATION_MOVE_REMOTE = "move_remote"
+
+    class ProgressQueue:
+        def __init__(self):
+            self.__queue = []
+            self.__total_cnt = 0
+            self.__finished_cnt = 0
+
+        def enqueue(self, obj):
+            self.__queue.append(obj)
+            if self.__finished_cnt == self.__total_cnt:
+                self.__finished_cnt = 0
+                self.__total_cnt = 0
+            self.__total_cnt += 1
+
+        def dequeue(self):
+            self.__finished_cnt += 1
+            return self.__queue.pop[0]
+
+        @property
+        def progress(self):
+            return None if self.__total_cnt == 0 else (self.__finished_cnt, self.__total_cnt)
+
+        @property
+        def progress_percent(self):
+            return None if self.__total_cnt == 0 else self.__finished_cnt / self.__total_cnt
+
+    class SyncJob:
+        def __init__(self, src_path, operation, dest_path=None):
+            self.src_path = src_path
+            self.dest_path = dest_path
+            self.operation = operation
+
+    def __init__(self, local_root, remote_root, file_manager):
         FileSystemEventHandler.__init__(self)
-        assert isinstance(file_manager, BaseFileManager), "file manager must be an instance of class <BaseFileManager>"
+        self.__local_root = local_root
+        self.__remote_root = remote_root
+
+        assert isinstance(file_manager, BaseFileManager), "file_manager must be an instance of <BaseFileManager>"
         self.__file_manager = file_manager
         self.__local_index = None
-        self.__is_synchronizing = False
-        self.__sync_event_queue = []
-        self.__total_task_cnt = 0
-        self.__fin_task_cnt = 0
+        self.__dispatch_queue = SyncCore.ProgressQueue()
 
     def initialize(self):
         """
         :return:
         """
-        self.__local_index = self._generate_index()
-        return self
+        try:
+            self.__local_index = self._generate_index()
+            return self
+        except Exception as e:
+            raise e
 
     def on_moved(self, event):
         """rename"""
         try:
             if self.__is_synchronizing:
-                self.__sync_event_queue.append(event)
+                self.__dispatch_queue.append(event)
                 return
             remote_old = self.__local_to_remote(event.src_path)
             remote_new = self.__local_to_remote(event.dest_path)
@@ -55,16 +96,10 @@ class SyncCore(FileSystemEventHandler):
         except Exception as e:
             raise e
 
-    # def on_created(self, event):
-    #     """create"""
-    #     remote = self.__local_to_remote(event.src_path)
-    #     self.__obj_manager.upload_file(remote, event.src_path)
-    #     logger_main.info("file created:{0}".format(event.src_path))
-
     def on_deleted(self, event):
         """delete"""
         if self.__is_synchronizing:
-            self.__sync_event_queue.append(event)
+            self.__dispatch_queue.append(event)
             return
         # FIXME
         # watchdog can't return correct isdir
@@ -83,14 +118,23 @@ class SyncCore(FileSystemEventHandler):
         :return:
         """
         if self.__is_synchronizing:
-            self.__sync_event_queue.append(event)
+            self.__dispatch_queue.append(event)
             return
         remote = self.__local_to_remote(event.src_path)
         self.__obj_manager.upload_file(remote, event.src_path)
 
+    def dispatch_sync_job(self, sync_job):
+        """
+        :param sync_job: 
+        :return: 
+        """
+        assert isinstance(sync_job, SyncCore.SyncJob), "sync_job must be an instance of <SyncJob>"
+        if sync_job.operation == SyncCore.OPERATION_UPLOAD:
+            self.__file_manager.upload_file(sync_job.src_path, sync_job.dest_path)
+
     def synchronize(self):
         """
-        synchronize local_path with the remote bucket
+        synchronize file system between local and remote
         :return:
         """
         self.__is_synchronizing = True
@@ -123,8 +167,8 @@ class SyncCore(FileSystemEventHandler):
                 self.__obj_manager.upload_file(self.__local_to_remote(local_key), local_key)
 
         # dispatch queued events
-        while len(self.__sync_event_queue) > 0:
-            event = self.__sync_event_queue.pop(0)
+        while len(self.__dispatch_queue) > 0:
+            event = self.__dispatch_queue.pop(0)
             if event.event_type == EVENT_TYPE_MOVED:
                 self.on_moved(event)
             elif event.event_type == EVENT_TYPE_DELETED:

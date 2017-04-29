@@ -56,28 +56,5 @@ def dir_md5(dir_path):
     pass
 
 
-def remote_normpath(remote_path):
-    """
-    normalize remote path
-    e.g. foo/bar/ --directory
-    e.g. foo/bar/foobar.txt --file
-    :param remote_path:
-    :return:
-    """
-    isdir = True if remote_path.endswith(('\\', '/')) else False
-    remote_path = path.normpath(remote_path).replace('\\', '/')
-    if isdir:
-        remote_path += '/'
-    return remote_path
-
-
-def remote_isdir(remote_path):
-    """
-    judge if a remote_path is a dir by if it ends with '/'
-    :param remote_path:
-    :return:
-    """
-    return remote_normpath(remote_path).endswith('/')
-
 if __name__ == "__main__":
     print(content_md5("$DIR$"))
