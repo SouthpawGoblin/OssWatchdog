@@ -1,5 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 /*.yaml
 /.idea
-/test/temp/
 oss_watchdog/__pycache__/
+test/temp/

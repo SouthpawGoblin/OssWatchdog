@@ -3,7 +3,8 @@
 """
 utils
 """
-from hashlib import md5
+import hashlib
+import base64
 import requests
 import time
 import os.path as path
@@ -21,30 +22,31 @@ def get_server_time():
     return stamp
 
 
-def content_md5(content):
+def file_md5(file_name, block_size=64 * 1024):
+    """计算文件的MD5
+    :param file_name: 文件名
+    :param block_size: 计算MD5的数据块大小，默认64KB
+    :return 文件内容的MD5值
     """
-    md5 of string content
-    :param content:
-    :return:
-    """
-    m = md5()
-    m.update(content.encode())
-    return m.hexdigest().upper()
+    with open(file_name, 'rb') as f:
+        md5 = hashlib.md5()
+        while True:
+            data = f.read(block_size)
+            if not data:
+                break
+            md5.update(data)
+
+    return base64.b64encode(md5.digest()).decode()
 
 
-def file_md5(file_path):
+def content_md5(data):
+    """计算数据的MD5
+    :param data: 数据
+    :return MD5值
     """
-    calculation file md5 (upper case)
-    :param file_path:
-    :return:
-    """
-    if path.isdir(file_path):
-        raise TypeError('input is a directory, use "dir_md5()" instead')
-    m = md5()
-    a_file = open(file_path, 'rb')
-    m.update(a_file.read())
-    a_file.close()
-    return m.hexdigest().upper()
+    md5 = hashlib.md5()
+    md5.update(str(data).encode())
+    return base64.b64encode(md5.digest()).decode()
 
 
 def dir_md5(dir_path):

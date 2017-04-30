@@ -36,8 +36,8 @@ service = oss2.Service(auth, config.endpoint, connect_timeout=config.connect_tim
 ################################# test ###########################################
 # md5 = util.file_md5("testPayLoad.html")
 # print(md5)
-# result = object_manager.upload_file("test/testPayLoad.html", "testPayLoad.html")
-# result = object_manager.download_file("test/testPayLoad.html", "testPayLoad.html")
+# result = object_manager.upload("test/testPayLoad.html", "testPayLoad.html")
+# result = object_manager.download("test/testPayLoad.html", "testPayLoad.html")
 #
 # a = 2
 

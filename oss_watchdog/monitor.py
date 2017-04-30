@@ -89,10 +89,10 @@ class SyncCore(FileSystemEventHandler):
             remote_old = self.__local_to_remote(event.src_path)
             remote_new = self.__local_to_remote(event.dest_path)
             if self.__obj_manager.file_exists(remote_old):
-                self.__obj_manager.rename_file(remote_old, remote_new)
+                self.__obj_manager.rename(remote_old, remote_new)
             else:
                 # put new file if old file does not exist
-                self.__obj_manager.upload_file(remote_new, event.dest_path)
+                self.__obj_manager.upload(remote_new, event.dest_path)
         except Exception as e:
             raise e
 
@@ -107,9 +107,9 @@ class SyncCore(FileSystemEventHandler):
         # else try delete a file with the same name
         remote_dir = self.__local_to_remote(event.src_path, True)
         if self.__obj_manager.file_exists(remote_dir):
-            self.__obj_manager.delete_file(remote_dir)
+            self.__obj_manager.delete(remote_dir)
         else:
-            self.__obj_manager.delete_file(remote_dir[:-1])
+            self.__obj_manager.delete(remote_dir[:-1])
 
     def on_modified(self, event):
         """
@@ -121,7 +121,7 @@ class SyncCore(FileSystemEventHandler):
             self.__dispatch_queue.append(event)
             return
         remote = self.__local_to_remote(event.src_path)
-        self.__obj_manager.upload_file(remote, event.src_path)
+        self.__obj_manager.upload(remote, event.src_path)
 
     def dispatch_sync_job(self, sync_job):
         """
@@ -139,7 +139,7 @@ class SyncCore(FileSystemEventHandler):
         """
         self.__is_synchronizing = True
         # get remote objects
-        remote_iter = self.__obj_manager.file_iterator(self.__sync_param.remote_path + '/')
+        remote_iter = self.__obj_manager.get_iterator(self.__sync_param.remote_path + '/')
 
         tmp_set = set([])
         for obj in remote_iter:
@@ -148,9 +148,9 @@ class SyncCore(FileSystemEventHandler):
                 local_obj = self.__local_index[local_key]
                 if local_obj.md5 != self.__obj_manager.get_md5(obj.key):   # different content
                     if local_obj.last_modified >= obj.last_modified:    # local is newer
-                        self.__obj_manager.upload_file(obj.key, local_key)
+                        self.__obj_manager.upload(obj.key, local_key)
                     else:                                               # remote is newer
-                        self.__obj_manager.download_file(obj.key, local_key)
+                        self.__obj_manager.download(obj.key, local_key)
             else:
                 if utils.remote_isdir(obj.key):
                     if not os.path.exists(local_key):
@@ -159,12 +159,12 @@ class SyncCore(FileSystemEventHandler):
                     tmp_dir = local_key[:local_key.rfind('\\')]
                     if not os.path.exists(tmp_dir):
                         os.makedirs(tmp_dir)
-                    self.__obj_manager.download_file(obj.key, local_key)
+                    self.__obj_manager.download(obj.key, local_key)
             tmp_set.add(local_key)
 
         for local_key in self.__local_index:
             if local_key not in tmp_set:
-                self.__obj_manager.upload_file(self.__local_to_remote(local_key), local_key)
+                self.__obj_manager.upload(self.__local_to_remote(local_key), local_key)
 
         # dispatch queued events
         while len(self.__dispatch_queue) > 0:
